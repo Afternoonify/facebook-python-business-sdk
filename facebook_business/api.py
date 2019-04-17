@@ -38,6 +38,7 @@ import json
 import six
 import collections
 import re
+import time
 
 from facebook_business.adobjects.objectparser import ObjectParser
 from facebook_business.typechecker import TypeChecker
@@ -64,6 +65,7 @@ class FacebookResponse(object):
         self._http_status = http_status
         self._headers = headers or {}
         self._call = call
+        time.sleep(3)
 
     def body(self):
         """Returns the response body."""
