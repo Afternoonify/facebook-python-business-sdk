@@ -41,7 +41,6 @@ class AdAssetFeedSpec(
         ad_formats = 'ad_formats'
         additional_data = 'additional_data'
         asset_customization_rules = 'asset_customization_rules'
-        autotranslate = 'autotranslate'
         bodies = 'bodies'
         call_to_action_types = 'call_to_action_types'
         captions = 'captions'
@@ -62,11 +61,14 @@ class AdAssetFeedSpec(
         buy_tickets = 'BUY_TICKETS'
         call = 'CALL'
         call_me = 'CALL_ME'
+        contact = 'CONTACT'
         contact_us = 'CONTACT_US'
         donate = 'DONATE'
         donate_now = 'DONATE_NOW'
         download = 'DOWNLOAD'
         event_rsvp = 'EVENT_RSVP'
+        find_a_group = 'FIND_A_GROUP'
+        find_your_groups = 'FIND_YOUR_GROUPS'
         follow_news_storyline = 'FOLLOW_NEWS_STORYLINE'
         get_directions = 'GET_DIRECTIONS'
         get_offer = 'GET_OFFER'
@@ -93,6 +95,7 @@ class AdAssetFeedSpec(
         share = 'SHARE'
         shop_now = 'SHOP_NOW'
         sign_up = 'SIGN_UP'
+        sotto_subscribe = 'SOTTO_SUBSCRIBE'
         subscribe = 'SUBSCRIBE'
         update_app = 'UPDATE_APP'
         use_app = 'USE_APP'
@@ -108,7 +111,6 @@ class AdAssetFeedSpec(
         'ad_formats': 'list<string>',
         'additional_data': 'Object',
         'asset_customization_rules': 'list<Object>',
-        'autotranslate': 'list<string>',
         'bodies': 'list<AdAssetFeedSpecBody>',
         'call_to_action_types': 'list<CallToActionTypes>',
         'captions': 'list<AdAssetFeedSpecCaption>',

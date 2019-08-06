@@ -75,9 +75,9 @@ class AdAccountCreationRequest(
         subvertical = 'subvertical'
         time_created = 'time_created'
         vertical = 'vertical'
+        advertiser_business_id = 'advertiser_business_id'
         business_registration = 'business_registration'
         promotable_page_urls = 'promotable_page_urls'
-        advertiser_business_id = 'advertiser_business_id'
 
     class Subvertical:
         accounting_and_taxes_and_legal = 'ACCOUNTING_AND_TAXES_AND_LEGAL'
@@ -223,58 +223,15 @@ class AdAccountCreationRequest(
         telecom = 'TELECOM'
         travel = 'TRAVEL'
 
-    class Status:
-        appeal_approved = 'APPEAL_APPROVED'
-        appeal_disapproved = 'APPEAL_DISAPPROVED'
-        appeal_pending = 'APPEAL_PENDING'
-        appeal_under_review = 'APPEAL_UNDER_REVIEW'
-        approved = 'APPROVED'
-        auto_approved = 'AUTO_APPROVED'
-        auto_disapproved = 'AUTO_DISAPPROVED'
-        cancelled = 'CANCELLED'
-        disapproved = 'DISAPPROVED'
-        pending = 'PENDING'
-        requested_change = 'REQUESTED_CHANGE'
-        under_review = 'UNDER_REVIEW'
-
     # @deprecated get_endpoint function is deprecated
     @classmethod
     def get_endpoint(cls):
         return 'adaccountcreationrequests'
 
+    # @deprecated api_create is being deprecated
     def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.adobjects.business import Business
         return Business(api=self._api, fbid=parent_id).create_ad_account_creation_request(fields, params, batch, success, failure, pending)
-
-    def api_delete(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='NODE',
-            response_parser=ObjectParser(reuse_object=self),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
 
     def api_get(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
@@ -311,33 +268,33 @@ class AdAccountCreationRequest(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'extended_credit_id': 'string',
             'ad_accounts_info': 'list<Object>',
-            'business_registration': 'file',
-            'planning_agency_business_id': 'string',
-            'english_legal_entity_name': 'string',
-            'legal_entity_name_in_local_language': 'string',
-            'address_in_local_language': 'string',
-            'chinese_legal_entity_name': 'string',
+            'additional_comment': 'string',
             'address_in_chinese': 'string',
             'address_in_english': 'Object',
-            'official_website_url': 'string',
-            'business_registration_id': 'string',
-            'vertical': 'vertical_enum',
-            'subvertical': 'subvertical_enum',
-            'promotable_page_urls': 'list<string>',
-            'promotable_page_ids': 'list<string>',
-            'promotable_app_ids': 'list<string>',
-            'promotable_urls': 'list<string>',
-            'contact': 'Object',
-            'additional_comment': 'string',
-            'is_smb': 'bool',
+            'address_in_local_language': 'string',
             'advertiser_business_id': 'string',
+            'business_registration': 'file',
+            'business_registration_id': 'string',
+            'chinese_legal_entity_name': 'string',
+            'contact': 'Object',
             'disapprove_appeal_comment': 'string',
+            'english_legal_entity_name': 'string',
+            'extended_credit_id': 'string',
+            'is_smb': 'bool',
+            'legal_entity_name_in_local_language': 'string',
+            'official_website_url': 'string',
+            'planning_agency_business_id': 'string',
+            'promotable_app_ids': 'list<string>',
+            'promotable_page_ids': 'list<string>',
+            'promotable_page_urls': 'list<string>',
+            'promotable_urls': 'list<string>',
+            'subvertical': 'subvertical_enum',
+            'vertical': 'vertical_enum',
         }
         enums = {
-            'vertical_enum': AdAccountCreationRequest.Vertical.__dict__.values(),
             'subvertical_enum': AdAccountCreationRequest.Subvertical.__dict__.values(),
+            'vertical_enum': AdAccountCreationRequest.Vertical.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -392,56 +349,6 @@ class AdAccountCreationRequest(
             self.assure_call()
             return request.execute()
 
-    def create_vietnam(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'ad_accounts_info': 'list<Object>',
-            'business_registration': 'file',
-            'planning_agency_business_id': 'string',
-            'english_legal_entity_name': 'string',
-            'address_in_english': 'Object',
-            'official_website_url': 'string',
-            'business_registration_id': 'string',
-            'vertical': 'vertical_enum',
-            'subvertical': 'subvertical_enum',
-            'promotable_page_urls': 'list<string>',
-            'promotable_page_ids': 'list<int>',
-            'promotable_app_ids': 'list<string>',
-            'promotable_urls': 'list<string>',
-            'contact': 'Object',
-            'additional_comment': 'string',
-            'advertiser_business_id': 'string',
-            'address_in_local_language': 'string',
-            'legal_entity_name_in_local_language': 'string',
-        }
-        enums = {
-            'vertical_enum': AdAccountCreationRequest.Vertical.__dict__.values(),
-            'subvertical_enum': AdAccountCreationRequest.Subvertical.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/vietnam',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AdAccountCreationRequest,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AdAccountCreationRequest, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     _field_types = {
         'ad_accounts_currency': 'string',
         'ad_accounts_info': 'list<Object>',
@@ -477,16 +384,15 @@ class AdAccountCreationRequest(
         'subvertical': 'string',
         'time_created': 'datetime',
         'vertical': 'string',
+        'advertiser_business_id': 'string',
         'business_registration': 'file',
         'promotable_page_urls': 'list<string>',
-        'advertiser_business_id': 'string',
     }
     @classmethod
     def _get_field_enum_info(cls):
         field_enum_info = {}
         field_enum_info['Subvertical'] = AdAccountCreationRequest.Subvertical.__dict__.values()
         field_enum_info['Vertical'] = AdAccountCreationRequest.Vertical.__dict__.values()
-        field_enum_info['Status'] = AdAccountCreationRequest.Status.__dict__.values()
         return field_enum_info
 
 

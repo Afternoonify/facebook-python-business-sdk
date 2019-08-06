@@ -92,13 +92,12 @@ class Business(
         telecom = 'TELECOM'
         travel = 'TRAVEL'
 
-    class AccessType:
-        agency = 'AGENCY'
-        owner = 'OWNER'
-
     class PermittedTasks:
         advertise = 'ADVERTISE'
         analyze = 'ANALYZE'
+        creative = 'CREATIVE'
+        draft = 'DRAFT'
+        fb_employee_dso_advertise = 'FB_EMPLOYEE_DSO_ADVERTISE'
         manage = 'MANAGE'
 
     class SurveyBusinessType:
@@ -107,31 +106,20 @@ class Business(
         app_developer = 'APP_DEVELOPER'
         publisher = 'PUBLISHER'
 
-    class PagePermittedRoles:
-        advertiser = 'ADVERTISER'
-        content_creator = 'CONTENT_CREATOR'
-        insights_analyst = 'INSIGHTS_ANALYST'
-        manager = 'MANAGER'
-        moderator = 'MODERATOR'
-
     class PagePermittedTasks:
         advertise = 'ADVERTISE'
         analyze = 'ANALYZE'
         create_content = 'CREATE_CONTENT'
         manage = 'MANAGE'
         manage_jobs = 'MANAGE_JOBS'
+        manage_leads = 'MANAGE_LEADS'
         moderate = 'MODERATE'
         moderate_community = 'MODERATE_COMMUNITY'
         pages_messaging = 'PAGES_MESSAGING'
         pages_messaging_subscriptions = 'PAGES_MESSAGING_SUBSCRIPTIONS'
+        platform_manage_pages = 'PLATFORM_MANAGE_PAGES'
         read_page_mailboxes = 'READ_PAGE_MAILBOXES'
-
-    class Role:
-        admin = 'ADMIN'
-        ads_rights_reviewer = 'ADS_RIGHTS_REVIEWER'
-        employee = 'EMPLOYEE'
-        finance_analyst = 'FINANCE_ANALYST'
-        finance_editor = 'FINANCE_EDITOR'
+        view_monetization_insights = 'VIEW_MONETIZATION_INSIGHTS'
 
     def api_get(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
@@ -169,14 +157,14 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
             'name': 'string',
-            'vertical': 'vertical_enum',
-            'timezone_id': 'unsigned int',
             'primary_page': 'string',
+            'timezone_id': 'unsigned int',
             'two_factor_type': 'two_factor_type_enum',
+            'vertical': 'vertical_enum',
         }
         enums = {
-            'vertical_enum': Business.Vertical.__dict__.values(),
             'two_factor_type_enum': Business.TwoFactorType.__dict__.values(),
+            'vertical_enum': Business.Vertical.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -232,6 +220,37 @@ class Business(
             self.assure_call()
             return request.execute()
 
+    def delete_ad_accounts(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        param_types = {
+            'adaccount_id': 'string',
+        }
+        enums = {
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='DELETE',
+            endpoint='/ad_accounts',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=AbstractCrudObject,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
     def get_ad_studies(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -270,17 +289,17 @@ class Business(
         from facebook_business.adobjects.adstudy import AdStudy
         param_types = {
             'cells': 'list<Object>',
-            'objectives': 'list<Object>',
-            'end_time': 'int',
-            'description': 'string',
-            'name': 'string',
-            'start_time': 'int',
-            'viewers': 'list<int>',
-            'cooldown_start_time': 'int',
-            'observation_end_time': 'int',
-            'confidence_level': 'float',
             'client_business': 'string',
+            'confidence_level': 'float',
+            'cooldown_start_time': 'int',
+            'description': 'string',
+            'end_time': 'int',
+            'name': 'string',
+            'objectives': 'list<Object>',
+            'observation_end_time': 'int',
+            'start_time': 'int',
             'type': 'type_enum',
+            'viewers': 'list<int>',
         }
         enums = {
             'type_enum': AdStudy.Type.__dict__.values(),
@@ -313,21 +332,21 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.adaccount import AdAccount
         param_types = {
-            'name': 'string',
+            'billing_address_id': 'string',
             'currency': 'string',
-            'timezone_id': 'unsigned int',
             'end_advertiser': 'Object',
             'funding_id': 'string',
-            'media_agency': 'string',
-            'partner': 'string',
             'invoice': 'bool',
-            'po_number': 'string',
+            'invoice_group_id': 'string',
             'invoicing_emails': 'list<string>',
             'io': 'bool',
-            'billing_address_id': 'string',
-            'sold_to_address_id': 'string',
             'liable_address_id': 'string',
-            'invoice_group_id': 'string',
+            'media_agency': 'string',
+            'name': 'string',
+            'partner': 'string',
+            'po_number': 'string',
+            'sold_to_address_id': 'string',
+            'timezone_id': 'unsigned int',
         }
         enums = {
         }
@@ -353,73 +372,39 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def get_ad_account_creation_requests(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.adaccountcreationrequest import AdAccountCreationRequest
-        param_types = {
-            'status': 'list<status_enum>',
-            'ad_account_creation_request_id': 'string',
-        }
-        enums = {
-            'status_enum': AdAccountCreationRequest.Status.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/adaccountcreationrequests',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AdAccountCreationRequest,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AdAccountCreationRequest, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def create_ad_account_creation_request(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.adaccountcreationrequest import AdAccountCreationRequest
         param_types = {
-            'extended_credit_id': 'string',
-            'ad_accounts_info': 'list<Object>',
-            'business_registration': 'file',
-            'planning_agency_business_id': 'string',
-            'english_legal_entity_name': 'string',
-            'legal_entity_name_in_local_language': 'string',
-            'chinese_legal_entity_name': 'string',
-            'address_in_chinese': 'string',
-            'address_in_local_language': 'string',
-            'address_in_english': 'Object',
-            'official_website_url': 'string',
-            'business_registration_id': 'string',
-            'vertical': 'vertical_enum',
-            'subvertical': 'subvertical_enum',
-            'promotable_page_urls': 'list<string>',
-            'promotable_page_ids': 'list<string>',
-            'promotable_app_ids': 'list<string>',
-            'promotable_urls': 'list<string>',
-            'contact': 'Object',
+            'ad_accounts_info': 'list<map>',
             'additional_comment': 'string',
+            'address_in_chinese': 'string',
+            'address_in_english': 'map',
+            'address_in_local_language': 'string',
+            'advertiser_business_id': 'string',
+            'business_registration': 'file',
+            'business_registration_id': 'string',
+            'chinese_legal_entity_name': 'string',
+            'contact': 'map',
+            'english_legal_entity_name': 'string',
+            'extended_credit_id': 'string',
             'is_smb': 'bool',
             'is_test': 'bool',
-            'advertiser_business_id': 'string',
+            'legal_entity_name_in_local_language': 'string',
+            'official_website_url': 'string',
+            'planning_agency_business_id': 'string',
+            'promotable_app_ids': 'list<string>',
+            'promotable_page_ids': 'list<int>',
+            'promotable_page_urls': 'list<string>',
+            'promotable_urls': 'list<string>',
+            'subvertical': 'subvertical_enum',
+            'vertical': 'vertical_enum',
         }
         enums = {
-            'vertical_enum': AdAccountCreationRequest.Vertical.__dict__.values(),
             'subvertical_enum': AdAccountCreationRequest.Subvertical.__dict__.values(),
+            'vertical_enum': AdAccountCreationRequest.Vertical.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -430,37 +415,6 @@ class Business(
             target_class=AdAccountCreationRequest,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=AdAccountCreationRequest, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def delete_ad_accounts(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'adaccount_id': 'string',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/adaccounts',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -527,9 +481,9 @@ class Business(
         param_types = {
             'aggregation_period': 'aggregation_period_enum',
             'breakdowns': 'list<breakdowns_enum>',
-            'metrics': 'list<metrics_enum>',
             'filters': 'list<Object>',
             'limit': 'int',
+            'metrics': 'list<metrics_enum>',
             'ordering_column': 'ordering_column_enum',
             'ordering_type': 'ordering_type_enum',
             'since': 'datetime',
@@ -602,8 +556,8 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.adspixel import AdsPixel
         param_types = {
-            'name_filter': 'string',
             'id_filter': 'string',
+            'name_filter': 'string',
             'sort_by': 'sort_by_enum',
         }
         enums = {
@@ -757,89 +711,24 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def get_agency_pages(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    def get_an_placements(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.page import Page
+        from facebook_business.adobjects.adplacement import AdPlacement
         param_types = {
-            'agency_id': 'string',
         }
         enums = {
         }
         request = FacebookRequest(
             node_id=self['id'],
             method='GET',
-            endpoint='/agency_pages',
+            endpoint='/an_placements',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=Page,
+            target_class=AdPlacement,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=Page, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def delete_apps(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'app_id': 'int',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/apps',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_app(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'app_id': 'Object',
-            'access_type': 'access_type_enum',
-        }
-        enums = {
-            'access_type_enum': Business.AccessType.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/apps',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=Business,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=Business, api=self._api),
+            response_parser=ObjectParser(target_class=AdPlacement, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -890,10 +779,16 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.oracletransaction import OracleTransaction
         param_types = {
-            'start_date': 'string',
             'end_date': 'string',
+            'invoice_id': 'unsigned int',
+            'issue_end_date': 'string',
+            'issue_start_date': 'string',
+            'root_id': 'unsigned int',
+            'start_date': 'string',
+            'type': 'type_enum',
         }
         enums = {
+            'type_enum': OracleTransaction.Type.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -1032,69 +927,6 @@ class Business(
             target_class=BusinessProject,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=BusinessProject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_business_setting_logs(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.businesssettinglogsdata import BusinessSettingLogsData
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/businesssettinglogs',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=BusinessSettingLogsData,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=BusinessSettingLogsData, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_catalog_segment_producer_tos(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.businessproductcatalogtos import BusinessProductCatalogTOS
-        param_types = {
-            'catalog_segment_id': 'string',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/catalog_segment_producer_tos',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=BusinessProductCatalogTOS,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=BusinessProductCatalogTOS, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -1484,11 +1316,11 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def get_credit_cards(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    def get_creative_folders(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.businesscreditcardlegacy import BusinessCreditCardLegacy
+        from facebook_business.adobjects.businesscreativefolder import BusinessCreativeFolder
         param_types = {
         }
         enums = {
@@ -1496,12 +1328,77 @@ class Business(
         request = FacebookRequest(
             node_id=self['id'],
             method='GET',
-            endpoint='/creditcards',
+            endpoint='/creative_folders',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=BusinessCreditCardLegacy,
+            target_class=BusinessCreativeFolder,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=BusinessCreditCardLegacy, api=self._api),
+            response_parser=ObjectParser(target_class=BusinessCreativeFolder, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
+    def create_creative_folder(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        from facebook_business.adobjects.businesscreativefolder import BusinessCreativeFolder
+        param_types = {
+            'description': 'string',
+            'name': 'string',
+        }
+        enums = {
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='POST',
+            endpoint='/creative_folders',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=BusinessCreativeFolder,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=BusinessCreativeFolder, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
+    def get_creatives(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        from facebook_business.adobjects.businesscreative import BusinessCreative
+        param_types = {
+            'creative_folder_id': 'string',
+        }
+        enums = {
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='GET',
+            endpoint='/creatives',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=BusinessCreative,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=BusinessCreative, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -1553,13 +1450,13 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.customconversion import CustomConversion
         param_types = {
-            'name': 'string',
+            'advanced_rule': 'string',
+            'custom_event_type': 'custom_event_type_enum',
+            'default_conversion_value': 'float',
             'description': 'string',
             'event_source_id': 'string',
+            'name': 'string',
             'rule': 'string',
-            'default_conversion_value': 'float',
-            'custom_event_type': 'custom_event_type_enum',
-            'advanced_rule': 'string',
         }
         enums = {
             'custom_event_type_enum': CustomConversion.CustomEventType.__dict__.values(),
@@ -1745,60 +1642,26 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def get_grp_plans(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    def create_image(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.reachfrequencyprediction import ReachFrequencyPrediction
         param_types = {
-            'status': 'status_enum',
+            'bytes': 'Object',
+            'creative_folder_id': 'string',
+            'name': 'string',
         }
         enums = {
-            'status_enum': ReachFrequencyPrediction.Status.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
-            method='GET',
-            endpoint='/grp_plans',
+            method='POST',
+            endpoint='/images',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=ReachFrequencyPrediction,
+            target_class=AbstractCrudObject,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=ReachFrequencyPrediction, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_initiated_audience_sharing_requests(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.businessassetsharingagreement import BusinessAssetSharingAgreement
-        param_types = {
-            'recipient_id': 'string',
-            'request_status': 'request_status_enum',
-        }
-        enums = {
-            'request_status_enum': BusinessAssetSharingAgreement.RequestStatus.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/initiated_audience_sharing_requests',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=BusinessAssetSharingAgreement,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=BusinessAssetSharingAgreement, api=self._api),
+            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -1913,18 +1776,18 @@ class Business(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'name': 'string',
-            'vertical': 'vertical_enum',
-            'timezone_id': 'unsigned int',
-            'survey_business_type': 'survey_business_type_enum',
-            'survey_num_people': 'unsigned int',
-            'survey_num_assets': 'unsigned int',
-            'sales_rep_email': 'string',
             'existing_client_business_id': 'string',
+            'name': 'string',
+            'sales_rep_email': 'string',
+            'survey_business_type': 'survey_business_type_enum',
+            'survey_num_assets': 'unsigned int',
+            'survey_num_people': 'unsigned int',
+            'timezone_id': 'unsigned int',
+            'vertical': 'vertical_enum',
         }
         enums = {
-            'vertical_enum': Business.Vertical.__dict__.values(),
             'survey_business_type_enum': Business.SurveyBusinessType.__dict__.values(),
+            'vertical_enum': Business.Vertical.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -1935,74 +1798,6 @@ class Business(
             target_class=Business,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=Business, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_measurement_reports(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.measurementreport import MeasurementReport
-        param_types = {
-            'report_type': 'report_type_enum',
-            'filters': 'list<Object>',
-        }
-        enums = {
-            'report_type_enum': MeasurementReport.ReportType.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/measurement_reports',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=MeasurementReport,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=MeasurementReport, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_measurement_report(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.measurementreport import MeasurementReport
-        param_types = {
-            'report_type': 'report_type_enum',
-            'metadata': 'string',
-        }
-        enums = {
-            'report_type_enum': MeasurementReport.ReportType.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/measurement_reports',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=MeasurementReport,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=MeasurementReport, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -2053,11 +1848,11 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.offlineconversiondataset import OfflineConversionDataSet
         param_types = {
-            'name': 'string',
+            'auto_assign_to_new_accounts_only': 'bool',
             'description': 'string',
             'enable_auto_assign_to_accounts': 'bool',
             'is_mta_use': 'bool',
-            'auto_assign_to_new_accounts_only': 'bool',
+            'name': 'string',
         }
         enums = {
         }
@@ -2306,21 +2101,19 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
             'name': 'string',
-            'vertical': 'vertical_enum',
-            'timezone_id': 'unsigned int',
-            'survey_business_type': 'survey_business_type_enum',
-            'survey_num_people': 'unsigned int',
-            'survey_num_assets': 'unsigned int',
+            'page_permitted_tasks': 'list<page_permitted_tasks_enum>',
             'sales_rep_email': 'string',
             'shared_page_id': 'string',
-            'page_permitted_roles': 'list<page_permitted_roles_enum>',
-            'page_permitted_tasks': 'list<page_permitted_tasks_enum>',
+            'survey_business_type': 'survey_business_type_enum',
+            'survey_num_assets': 'unsigned int',
+            'survey_num_people': 'unsigned int',
+            'timezone_id': 'unsigned int',
+            'vertical': 'vertical_enum',
         }
         enums = {
-            'vertical_enum': Business.Vertical.__dict__.values(),
-            'survey_business_type_enum': Business.SurveyBusinessType.__dict__.values(),
-            'page_permitted_roles_enum': Business.PagePermittedRoles.__dict__.values(),
             'page_permitted_tasks_enum': Business.PagePermittedTasks.__dict__.values(),
+            'survey_business_type_enum': Business.SurveyBusinessType.__dict__.values(),
+            'vertical_enum': Business.Vertical.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -2344,73 +2137,10 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def get_owned_custom_conversions(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.customconversion import CustomConversion
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/owned_custom_conversions',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=CustomConversion,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=CustomConversion, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_owned_domains(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.owneddomain import OwnedDomain
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/owned_domains',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=OwnedDomain,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=OwnedDomain, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def create_owned_domain(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.owneddomain import OwnedDomain
         param_types = {
             'domain_name': 'string',
         }
@@ -2422,9 +2152,9 @@ class Business(
             endpoint='/owned_domains',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=OwnedDomain,
+            target_class=AbstractCrudObject,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=OwnedDomain, api=self._api),
+            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -2505,8 +2235,8 @@ class Business(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'page_id': 'int',
             'ig_password': 'string',
+            'page_id': 'int',
         }
         enums = {
         }
@@ -2600,11 +2330,11 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.productcatalog import ProductCatalog
         param_types = {
+            'da_display_settings': 'Object',
+            'destination_catalog_settings': 'map',
+            'flight_catalog_settings': 'map',
             'name': 'string',
             'vertical': 'vertical_enum',
-            'flight_catalog_settings': 'map',
-            'destination_catalog_settings': 'map',
-            'da_display_settings': 'Object',
         }
         enums = {
             'vertical_enum': ProductCatalog.Vertical.__dict__.values(),
@@ -2649,149 +2379,6 @@ class Business(
             target_class=AbstractCrudObject,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_partner_integrations(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.partnerintegrationlinked import PartnerIntegrationLinked
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/partner_integrations',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=PartnerIntegrationLinked,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=PartnerIntegrationLinked, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_partner_integration(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.partnerintegrationlinked import PartnerIntegrationLinked
-        param_types = {
-            'external_id': 'string',
-            'gtm_account_id': 'string',
-            'gtm_container_id': 'string',
-            'name': 'string',
-            'partner': 'partner_enum',
-        }
-        enums = {
-            'partner_enum': PartnerIntegrationLinked.Partner.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/partner_integrations',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=PartnerIntegrationLinked,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=PartnerIntegrationLinked, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_partner_ad_account(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'name': 'string',
-            'currency': 'string',
-            'timezone_id': 'unsigned int',
-            'end_advertiser': 'Object',
-            'funding_id': 'string',
-            'media_agency': 'string',
-            'partner': 'string',
-            'invoice': 'bool',
-            'po_number': 'string',
-            'invoicing_emails': 'list<string>',
-            'io': 'bool',
-            'billing_address_id': 'string',
-            'sold_to_address_id': 'string',
-            'liable_address_id': 'string',
-            'invoice_group_id': 'string',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/partneradaccount',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_partners(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/partners',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=Business,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=Business, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -2933,7 +2520,7 @@ class Business(
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.legacybusinessadaccountrequest import LegacyBusinessAdAccountRequest
+        from facebook_business.adobjects.businessadaccountrequest import BusinessAdAccountRequest
         param_types = {
         }
         enums = {
@@ -2944,9 +2531,9 @@ class Business(
             endpoint='/pending_owned_ad_accounts',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=LegacyBusinessAdAccountRequest,
+            target_class=BusinessAdAccountRequest,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=LegacyBusinessAdAccountRequest, api=self._api),
+            response_parser=ObjectParser(target_class=BusinessAdAccountRequest, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -2978,6 +2565,37 @@ class Business(
             target_class=BusinessPageRequest,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=BusinessPageRequest, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
+    def get_pending_shared_creative_folders(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        from facebook_business.adobjects.businesscreativefolder import BusinessCreativeFolder
+        param_types = {
+        }
+        enums = {
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='GET',
+            endpoint='/pending_shared_creative_folders',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=BusinessCreativeFolder,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=BusinessCreativeFolder, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -3061,9 +2679,9 @@ class Business(
         from facebook_business.adobjects.profilepicturesource import ProfilePictureSource
         param_types = {
             'height': 'int',
-            'width': 'int',
-            'type': 'type_enum',
             'redirect': 'bool',
+            'type': 'type_enum',
+            'width': 'int',
         }
         enums = {
             'type_enum': ProfilePictureSource.Type.__dict__.values(),
@@ -3122,40 +2740,6 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def get_received_audience_sharing_requests(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.businessassetsharingagreement import BusinessAssetSharingAgreement
-        param_types = {
-            'initiator_id': 'string',
-            'request_status': 'request_status_enum',
-        }
-        enums = {
-            'request_status_enum': BusinessAssetSharingAgreement.RequestStatus.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/received_audience_sharing_requests',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=BusinessAssetSharingAgreement,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=BusinessAssetSharingAgreement, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def get_received_inprogress_on_behalf_requests(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -3193,8 +2777,8 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.businessagreement import BusinessAgreement
         param_types = {
-            'requesting_business_id': 'string',
             'request_status': 'request_status_enum',
+            'requesting_business_id': 'string',
         }
         enums = {
             'request_status_enum': BusinessAgreement.RequestStatus.__dict__.values(),
@@ -3258,8 +2842,8 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.businessownedobjectonbehalfofrequest import BusinessOwnedObjectOnBehalfOfRequest
         param_types = {
-            'receiving_business': 'string',
             'business_owned_object': 'string',
+            'receiving_business': 'string',
         }
         enums = {
         }
@@ -3317,37 +2901,6 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def create_spaco_data_set_collection(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'spaco_data_collections': 'list<string>',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/spaco_dataset_collections',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def get_system_users(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -3385,8 +2938,8 @@ class Business(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.systemuser import SystemUser
         param_types = {
-            'role': 'role_enum',
             'name': 'string',
+            'role': 'role_enum',
             'system_user_id': 'int',
         }
         enums = {
@@ -3445,73 +2998,6 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def create_third_party_measurement_report_dataset(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.thirdpartymeasurementreportdataset import ThirdPartyMeasurementReportDataset
-        param_types = {
-            'category': 'category_enum',
-            'product': 'product_enum',
-            'schema': 'list<map>',
-        }
-        enums = {
-            'category_enum': ThirdPartyMeasurementReportDataset.Category.__dict__.values(),
-            'product_enum': ThirdPartyMeasurementReportDataset.Product.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/third_party_measurement_report_dataset',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=ThirdPartyMeasurementReportDataset,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=ThirdPartyMeasurementReportDataset, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_upload_event(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.measurementuploadevent import MeasurementUploadEvent
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/upload_event',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=MeasurementUploadEvent,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=MeasurementUploadEvent, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def create_upload_event(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -3556,180 +3042,102 @@ class Business(
             self.assure_call()
             return request.execute()
 
-    def delete_user_invitations(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    def create_video(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
+        from facebook_business.adobjects.advideo import AdVideo
         param_types = {
-            'email': 'string',
+            'adaptive_type': 'string',
+            'animated_effect_id': 'unsigned int',
+            'application_id': 'string',
+            'asked_fun_fact_prompt_id': 'unsigned int',
+            'attribution_app_id': 'string',
+            'audio_story_wave_animation_handle': 'string',
+            'chunk_session_id': 'string',
+            'composer_entry_picker': 'string',
+            'composer_entry_point': 'string',
+            'composer_entry_time': 'unsigned int',
+            'composer_session_events_log': 'string',
+            'composer_session_id': 'string',
+            'composer_source_surface': 'string',
+            'composer_type': 'string',
+            'container_type': 'container_type_enum',
+            'content_category': 'content_category_enum',
+            'creative_folder_id': 'string',
+            'description': 'string',
+            'embeddable': 'bool',
+            'end_offset': 'unsigned int',
+            'fbuploader_video_file_chunk': 'string',
+            'file_size': 'unsigned int',
+            'file_url': 'string',
+            'fisheye_video_cropped': 'bool',
+            'formatting': 'formatting_enum',
+            'fov': 'unsigned int',
+            'front_z_rotation': 'float',
+            'fun_fact_prompt_id': 'unsigned int',
+            'fun_fact_toastee_id': 'unsigned int',
+            'guide': 'list<list<unsigned int>>',
+            'guide_enabled': 'bool',
+            'has_nickname': 'bool',
+            'holiday_card': 'string',
+            'initial_heading': 'unsigned int',
+            'initial_pitch': 'unsigned int',
+            'instant_game_entry_point_data': 'string',
+            'is_boost_intended': 'bool',
+            'is_group_linking_post': 'bool',
+            'is_voice_clip': 'bool',
+            'location_source_id': 'string',
+            'offer_like_post_id': 'unsigned int',
+            'og_action_type_id': 'string',
+            'og_icon_id': 'string',
+            'og_object_id': 'string',
+            'og_phrase': 'string',
+            'og_suggestion_mechanism': 'string',
+            'original_fov': 'unsigned int',
+            'original_projection_type': 'original_projection_type_enum',
+            'publish_event_id': 'unsigned int',
+            'react_mode_metadata': 'string',
+            'referenced_sticker_id': 'string',
+            'replace_video_id': 'string',
+            'sales_promo_id': 'unsigned int',
+            'slideshow_spec': 'map',
+            'source': 'string',
+            'spherical': 'bool',
+            'start_offset': 'unsigned int',
+            'swap_mode': 'swap_mode_enum',
+            'text_format_metadata': 'string',
+            'throwback_camera_roll_media': 'string',
+            'thumb': 'file',
+            'time_since_original_post': 'unsigned int',
+            'title': 'string',
+            'transcode_setting_properties': 'string',
+            'unpublished_content_type': 'unpublished_content_type_enum',
+            'upload_phase': 'upload_phase_enum',
+            'upload_session_id': 'string',
+            'upload_setting_properties': 'string',
+            'video_file_chunk': 'string',
+            'video_start_time_ms': 'unsigned int',
+            'waterfall_id': 'string',
         }
         enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/user_invitations',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_user_invitations(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.businessrolerequest import BusinessRoleRequest
-        param_types = {
-            'status': 'status_enum',
-            'email': 'string',
-        }
-        enums = {
-            'status_enum': BusinessRoleRequest.Status.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/user_invitations',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=BusinessRoleRequest,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=BusinessRoleRequest, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def delete_user_permissions(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'user': 'int',
-            'email': 'string',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/userpermissions',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_user_permission(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'user': 'int',
-            'email': 'string',
-            'role': 'role_enum',
-        }
-        enums = {
-            'role_enum': Business.Role.__dict__.values(),
+            'container_type_enum': AdVideo.ContainerType.__dict__.values(),
+            'content_category_enum': AdVideo.ContentCategory.__dict__.values(),
+            'formatting_enum': AdVideo.Formatting.__dict__.values(),
+            'original_projection_type_enum': AdVideo.OriginalProjectionType.__dict__.values(),
+            'swap_mode_enum': AdVideo.SwapMode.__dict__.values(),
+            'unpublished_content_type_enum': AdVideo.UnpublishedContentType.__dict__.values(),
+            'upload_phase_enum': AdVideo.UploadPhase.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
             method='POST',
-            endpoint='/userpermissions',
+            endpoint='/videos',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=Business,
+            target_class=AdVideo,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=Business, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_vietnam_ad_account_creation_request(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.adaccountcreationrequest import AdAccountCreationRequest
-        param_types = {
-            'address_in_local_language': 'string',
-            'ad_accounts_currency': 'string',
-            'credit_card_id': 'string',
-            'extended_credit_id': 'string',
-            'legal_entity_name_in_local_language': 'string',
-            'ad_accounts_info': 'list<Object>',
-            'business_registration': 'file',
-            'planning_agency_business_id': 'string',
-            'english_legal_entity_name': 'string',
-            'address_in_english': 'Object',
-            'official_website_url': 'string',
-            'business_registration_id': 'string',
-            'vertical': 'vertical_enum',
-            'subvertical': 'subvertical_enum',
-            'promotable_page_urls': 'list<string>',
-            'promotable_page_ids': 'list<int>',
-            'promotable_app_ids': 'list<string>',
-            'promotable_urls': 'list<string>',
-            'contact': 'Object',
-            'additional_comment': 'string',
-            'is_smb': 'bool',
-            'is_test': 'bool',
-            'advertiser_business_id': 'string',
-        }
-        enums = {
-            'vertical_enum': AdAccountCreationRequest.Vertical.__dict__.values(),
-            'subvertical_enum': AdAccountCreationRequest.Subvertical.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/vietnamadaccountcreationrequests',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AdAccountCreationRequest,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AdAccountCreationRequest, api=self._api),
+            response_parser=ObjectParser(target_class=AdVideo, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -3769,12 +3177,9 @@ class Business(
         field_enum_info = {}
         field_enum_info['TwoFactorType'] = Business.TwoFactorType.__dict__.values()
         field_enum_info['Vertical'] = Business.Vertical.__dict__.values()
-        field_enum_info['AccessType'] = Business.AccessType.__dict__.values()
         field_enum_info['PermittedTasks'] = Business.PermittedTasks.__dict__.values()
         field_enum_info['SurveyBusinessType'] = Business.SurveyBusinessType.__dict__.values()
-        field_enum_info['PagePermittedRoles'] = Business.PagePermittedRoles.__dict__.values()
         field_enum_info['PagePermittedTasks'] = Business.PagePermittedTasks.__dict__.values()
-        field_enum_info['Role'] = Business.Role.__dict__.values()
         return field_enum_info
 
 

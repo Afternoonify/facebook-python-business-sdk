@@ -49,6 +49,11 @@ class VideoPoll(
         show_results = 'show_results'
         status = 'status'
 
+    class Status:
+        closed = 'closed'
+        results_open = 'results_open'
+        voting_open = 'voting_open'
+
     class Action:
         attach_to_video = 'ATTACH_TO_VIDEO'
         close = 'CLOSE'
@@ -92,10 +97,10 @@ class VideoPoll(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
             'action': 'action_enum',
-            'default_open': 'bool',
-            'show_results': 'bool',
-            'show_gradient': 'bool',
             'close_after_voting': 'bool',
+            'default_open': 'bool',
+            'show_gradient': 'bool',
+            'show_results': 'bool',
         }
         enums = {
             'action_enum': VideoPoll.Action.__dict__.values(),
@@ -159,11 +164,12 @@ class VideoPoll(
         'question': 'string',
         'show_gradient': 'bool',
         'show_results': 'bool',
-        'status': 'string',
+        'status': 'Status',
     }
     @classmethod
     def _get_field_enum_info(cls):
         field_enum_info = {}
+        field_enum_info['Status'] = VideoPoll.Status.__dict__.values()
         field_enum_info['Action'] = VideoPoll.Action.__dict__.values()
         return field_enum_info
 

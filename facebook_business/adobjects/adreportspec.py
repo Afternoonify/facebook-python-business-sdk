@@ -59,18 +59,16 @@ class AdReportSpec(
         time_increment = 'time_increment'
         time_interval = 'time_interval'
         time_ranges = 'time_ranges'
-        format = 'format'
-        report_run_id = 'report_run_id'
-        user_report = 'user_report'
-        business_id = 'business_id'
-        limit = 'limit'
-        bypass_async = 'bypass_async'
 
     class ActionsGroupBy:
+        action_brand = 'action_brand'
         action_canvas_component_id = 'action_canvas_component_id'
         action_canvas_component_name = 'action_canvas_component_name'
         action_carousel_card_id = 'action_carousel_card_id'
         action_carousel_card_name = 'action_carousel_card_name'
+        action_category = 'action_category'
+        action_converted_brand_tag_id = 'action_converted_brand_tag_id'
+        action_converted_category_tag_id = 'action_converted_category_tag_id'
         action_converted_product_id = 'action_converted_product_id'
         action_destination = 'action_destination'
         action_device = 'action_device'
@@ -113,15 +111,6 @@ class AdReportSpec(
         json = 'JSON'
         xls = 'XLS'
         xlsx = 'XLSX'
-
-    # @deprecated get_endpoint function is deprecated
-    @classmethod
-    def get_endpoint(cls):
-        return 'adreportspecs'
-
-    def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.adobjects.adaccount import AdAccount
-        return AdAccount(api=self._api, fbid=parent_id).create_ad_report_spec(fields, params, batch, success, failure, pending)
 
     def api_delete(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
@@ -188,33 +177,33 @@ class AdReportSpec(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'time_ranges': 'list',
-            'data_columns': 'list<string>',
             'actions_group_by': 'list<actions_group_by_enum>',
+            'business_id': 'string',
+            'bypass_async': 'bool',
+            'creation_source': 'creation_source_enum',
+            'data_columns': 'list<string>',
+            'date_preset': 'date_preset_enum',
+            'export_columns': 'Object',
             'filters': 'list<Object>',
+            'format': 'format_enum',
+            'format_version': 'unsigned int',
+            'insights_section': 'Object',
+            'limit': 'int',
+            'name': 'string',
+            'report_run_id': 'string',
+            'report_schedule_id': 'string',
             'sort_by': 'string',
             'sort_dir': 'string',
             'time_increment': 'string',
             'time_interval': 'Object',
-            'date_preset': 'date_preset_enum',
-            'format': 'format_enum',
-            'export_columns': 'Object',
-            'report_run_id': 'string',
-            'name': 'string',
+            'time_ranges': 'list',
             'user_report': 'bool',
-            'business_id': 'string',
-            'limit': 'int',
-            'bypass_async': 'bool',
-            'report_schedule_id': 'string',
-            'insights_section': 'Object',
-            'creation_source': 'creation_source_enum',
-            'format_version': 'unsigned int',
         }
         enums = {
             'actions_group_by_enum': AdReportSpec.ActionsGroupBy.__dict__.values(),
+            'creation_source_enum': AdReportSpec.CreationSource.__dict__.values(),
             'date_preset_enum': AdReportSpec.DatePreset.__dict__.values(),
             'format_enum': AdReportSpec.Format.__dict__.values(),
-            'creation_source_enum': AdReportSpec.CreationSource.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -257,12 +246,6 @@ class AdReportSpec(
         'time_increment': 'string',
         'time_interval': 'Object',
         'time_ranges': 'list<Object>',
-        'format': 'Format',
-        'report_run_id': 'string',
-        'user_report': 'bool',
-        'business_id': 'string',
-        'limit': 'int',
-        'bypass_async': 'bool',
     }
     @classmethod
     def _get_field_enum_info(cls):

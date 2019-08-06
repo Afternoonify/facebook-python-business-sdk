@@ -46,7 +46,6 @@ class Targeting(
         audience_network_positions = 'audience_network_positions'
         behaviors = 'behaviors'
         brand_safety_content_filter_levels = 'brand_safety_content_filter_levels'
-        brand_safety_content_severity_levels = 'brand_safety_content_severity_levels'
         catalog_based_targeting = 'catalog_based_targeting'
         cities = 'cities'
         college_years = 'college_years'
@@ -71,6 +70,7 @@ class Targeting(
         engagement_specs = 'engagement_specs'
         ethnic_affinity = 'ethnic_affinity'
         exclude_reached_since = 'exclude_reached_since'
+        excluded_brand_safety_content_types = 'excluded_brand_safety_content_types'
         excluded_connections = 'excluded_connections'
         excluded_custom_audiences = 'excluded_custom_audiences'
         excluded_dynamic_audience_ids = 'excluded_dynamic_audience_ids'
@@ -97,7 +97,6 @@ class Targeting(
         income = 'income'
         industries = 'industries'
         instagram_positions = 'instagram_positions'
-        instream_video_sponsorship_placements = 'instream_video_sponsorship_placements'
         interested_in = 'interested_in'
         interests = 'interests'
         is_whatsapp_destination_ad = 'is_whatsapp_destination_ad'
@@ -148,7 +147,6 @@ class Targeting(
         'audience_network_positions': 'list<string>',
         'behaviors': 'list<IDName>',
         'brand_safety_content_filter_levels': 'list<string>',
-        'brand_safety_content_severity_levels': 'list<string>',
         'catalog_based_targeting': 'CatalogBasedTargeting',
         'cities': 'list<IDName>',
         'college_years': 'list<unsigned int>',
@@ -173,6 +171,7 @@ class Targeting(
         'engagement_specs': 'list<TargetingDynamicRule>',
         'ethnic_affinity': 'list<IDName>',
         'exclude_reached_since': 'list<string>',
+        'excluded_brand_safety_content_types': 'list<string>',
         'excluded_connections': 'list<IDName>',
         'excluded_custom_audiences': 'list<IDName>',
         'excluded_dynamic_audience_ids': 'list<string>',
@@ -199,7 +198,6 @@ class Targeting(
         'income': 'list<IDName>',
         'industries': 'list<IDName>',
         'instagram_positions': 'list<string>',
-        'instream_video_sponsorship_placements': 'list<string>',
         'interested_in': 'list<unsigned int>',
         'interests': 'list<IDName>',
         'is_whatsapp_destination_ad': 'bool',

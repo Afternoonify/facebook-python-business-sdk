@@ -52,16 +52,6 @@ class HotelRoom(
         room_id = 'room_id'
         sale_price = 'sale_price'
         url = 'url'
-        pricing_variables = 'pricing_variables'
-
-    # @deprecated get_endpoint function is deprecated
-    @classmethod
-    def get_endpoint(cls):
-        return 'hotel_rooms'
-
-    def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.adobjects.hotel import Hotel
-        return Hotel(api=self._api, fbid=parent_id).create_hotel_room(fields, params, batch, success, failure, pending)
 
     def api_delete(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
@@ -128,16 +118,16 @@ class HotelRoom(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'description': 'string',
-            'name': 'string',
-            'url': 'string',
-            'currency': 'string',
-            'base_price': 'float',
             'applinks': 'Object',
+            'base_price': 'float',
+            'currency': 'string',
+            'description': 'string',
             'images': 'list<Object>',
             'margin_level': 'unsigned int',
+            'name': 'string',
             'pricing_variables': 'list<Object>',
             'sale_price': 'float',
+            'url': 'string',
         }
         enums = {
         }
@@ -206,7 +196,6 @@ class HotelRoom(
         'room_id': 'string',
         'sale_price': 'string',
         'url': 'string',
-        'pricing_variables': 'list<Object>',
     }
     @classmethod
     def _get_field_enum_info(cls):

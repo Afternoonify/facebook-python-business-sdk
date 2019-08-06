@@ -48,12 +48,10 @@ class PagePost(
         backdated_time = 'backdated_time'
         call_to_action = 'call_to_action'
         can_reply_privately = 'can_reply_privately'
-        caption = 'caption'
         child_attachments = 'child_attachments'
         comments_mirroring_domain = 'comments_mirroring_domain'
         coordinates = 'coordinates'
         created_time = 'created_time'
-        description = 'description'
         event = 'event'
         expanded_height = 'expanded_height'
         expanded_width = 'expanded_width'
@@ -65,19 +63,17 @@ class PagePost(
         id = 'id'
         instagram_eligibility = 'instagram_eligibility'
         is_app_share = 'is_app_share'
+        is_eligible_for_promotion = 'is_eligible_for_promotion'
         is_expired = 'is_expired'
         is_hidden = 'is_hidden'
         is_instagram_eligible = 'is_instagram_eligible'
         is_popular = 'is_popular'
         is_published = 'is_published'
         is_spherical = 'is_spherical'
-        link = 'link'
         message = 'message'
         message_tags = 'message_tags'
         multi_share_end_card = 'multi_share_end_card'
         multi_share_optimized = 'multi_share_optimized'
-        name = 'name'
-        object_id = 'object_id'
         parent_id = 'parent_id'
         permalink_url = 'permalink_url'
         picture = 'picture'
@@ -88,7 +84,6 @@ class PagePost(
         properties = 'properties'
         scheduled_publish_time = 'scheduled_publish_time'
         shares = 'shares'
-        source = 'source'
         status_type = 'status_type'
         story = 'story'
         story_tags = 'story_tags'
@@ -96,7 +91,6 @@ class PagePost(
         target = 'target'
         targeting = 'targeting'
         timeline_visibility = 'timeline_visibility'
-        type = 'type'
         updated_time = 'updated_time'
         via = 'via'
         video_buying_eligibility = 'video_buying_eligibility'
@@ -223,41 +217,41 @@ class PagePost(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'privacy': 'string',
-            'composer_session_id': 'string',
-            'message': 'string',
-            'is_hidden': 'bool',
-            'is_published': 'bool',
-            'scheduled_publish_time': 'unsigned int',
-            'is_pinned': 'bool',
-            'timeline_visibility': 'timeline_visibility_enum',
-            'feed_story_visibility': 'feed_story_visibility_enum',
+            'attached_media': 'list<Object>',
             'backdated_time': 'datetime',
             'backdated_time_granularity': 'backdated_time_granularity_enum',
-            'tracking': 'string',
-            'source_type': 'string',
-            'attached_media': 'list<Object>',
+            'composer_session_id': 'string',
+            'direct_share_status': 'unsigned int',
+            'feed_story_visibility': 'feed_story_visibility_enum',
+            'is_explicit_location': 'bool',
+            'is_hidden': 'bool',
+            'is_pinned': 'bool',
+            'is_published': 'bool',
+            'message': 'string',
             'og_action_type_id': 'string',
+            'og_hide_object_attachment': 'bool',
+            'og_icon_id': 'string',
             'og_object_id': 'string',
             'og_phrase': 'string',
-            'og_icon_id': 'string',
-            'og_suggestion_mechanism': 'string',
-            'og_hide_object_attachment': 'bool',
-            'tags': 'list<int>',
             'og_set_profile_badge': 'bool',
+            'og_suggestion_mechanism': 'string',
             'place': 'Object',
-            'is_explicit_location': 'bool',
+            'privacy': 'string',
             'product_item': 'Object',
+            'scheduled_publish_time': 'unsigned int',
             'should_sync_product_edit': 'bool',
+            'source_type': 'string',
             'sponsor_id': 'string',
-            'direct_share_status': 'unsigned int',
             'sponsor_relationship': 'unsigned int',
+            'tags': 'list<int>',
             'text_format_preset_id': 'string',
+            'timeline_visibility': 'timeline_visibility_enum',
+            'tracking': 'string',
         }
         enums = {
-            'timeline_visibility_enum': PagePost.TimelineVisibility.__dict__.values(),
-            'feed_story_visibility_enum': PagePost.FeedStoryVisibility.__dict__.values(),
             'backdated_time_granularity_enum': PagePost.BackdatedTimeGranularity.__dict__.values(),
+            'feed_story_visibility_enum': PagePost.FeedStoryVisibility.__dict__.values(),
+            'timeline_visibility_enum': PagePost.TimelineVisibility.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -318,14 +312,14 @@ class PagePost(
         from facebook_business.adobjects.comment import Comment
         param_types = {
             'filter': 'filter_enum',
-            'order': 'order_enum',
             'live_filter': 'live_filter_enum',
+            'order': 'order_enum',
             'since': 'datetime',
         }
         enums = {
             'filter_enum': Comment.Filter.__dict__.values(),
-            'order_enum': Comment.Order.__dict__.values(),
             'live_filter_enum': Comment.LiveFilter.__dict__.values(),
+            'order_enum': Comment.Order.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -355,17 +349,17 @@ class PagePost(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.comment import Comment
         param_types = {
-            'message': 'string',
-            'tracking': 'string',
-            'nectar_module': 'string',
             'attachment_id': 'string',
-            'attachment_url': 'string',
             'attachment_share_url': 'string',
-            'post_id': 'string',
-            'parent_comment_id': 'Object',
+            'attachment_url': 'string',
             'comment': 'string',
-            'feedback_source': 'string',
             'comment_privacy_value': 'comment_privacy_value_enum',
+            'feedback_source': 'string',
+            'message': 'string',
+            'nectar_module': 'string',
+            'parent_comment_id': 'Object',
+            'post_id': 'string',
+            'tracking': 'string',
         }
         enums = {
             'comment_privacy_value_enum': Comment.CommentPrivacyValue.__dict__.values(),
@@ -461,15 +455,15 @@ class PagePost(
         if is_async:
           return self.get_insights_async(fields, params, batch, success, failure, pending)
         param_types = {
-            'since': 'datetime',
-            'until': 'datetime',
+            'date_preset': 'date_preset_enum',
             'metric': 'list<Object>',
             'period': 'period_enum',
-            'date_preset': 'date_preset_enum',
+            'since': 'datetime',
+            'until': 'datetime',
         }
         enums = {
-            'period_enum': InsightsResult.Period.__dict__.values(),
             'date_preset_enum': InsightsResult.DatePreset.__dict__.values(),
+            'period_enum': InsightsResult.Period.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -499,8 +493,8 @@ class PagePost(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'tracking': 'string',
             'nectar_module': 'string',
+            'tracking': 'string',
         }
         enums = {
         }
@@ -562,9 +556,9 @@ class PagePost(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'tracking': 'string',
-            'nectar_module': 'string',
             'feedback_source': 'string',
+            'nectar_module': 'string',
+            'tracking': 'string',
         }
         enums = {
         }
@@ -590,106 +584,24 @@ class PagePost(
             self.assure_call()
             return request.execute()
 
-    def create_promotion(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    def create_private_reply(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'budget': 'unsigned int',
-            'currency': 'string',
-            'ad_account_id': 'string',
-            'audience': 'audience_enum',
-            'targeting': 'Targeting',
-            'start_time': 'unsigned int',
-            'stop_time': 'unsigned int',
-            'ad_conversion_pixel_id': 'unsigned int',
-            'placement': 'string',
-            'flow_id': 'string',
-            'audience_id': 'string',
-            'bid_amount': 'unsigned int',
-            'cta_type': 'cta_type_enum',
+            'message': 'string',
         }
         enums = {
-            'audience_enum': [
-                'AUTO_LOOKALIKE',
-                'AUTO_PAGE_LOOKALIKE',
-                'AUTO_TARGETING',
-                'CREATE_NEW',
-                'CUSTOM_AUDIENCE',
-                'DISTRICT',
-                'EVENT_CUSTOM_AUDIENCES',
-                'EVENT_ENGAGEMENT',
-                'FANS',
-                'GROUPER',
-                'IG_PROMOTED_POST_AUTO',
-                'LOCAL',
-                'LOOKALIKE',
-                'MULT_CUSTOM_AUDIENCES',
-                'NCPP',
-                'SAVED_AUDIENCE',
-                'SMART_AUDIENCE',
-            ],
-            'cta_type_enum': [
-                'ADD_TO_CART',
-                'APPLY_NOW',
-                'BOOK_TRAVEL',
-                'BUY',
-                'BUY_NOW',
-                'BUY_TICKETS',
-                'CALL',
-                'CALL_ME',
-                'CONTACT_US',
-                'DONATE',
-                'DONATE_NOW',
-                'DOWNLOAD',
-                'EVENT_RSVP',
-                'FOLLOW_NEWS_STORYLINE',
-                'GET_DIRECTIONS',
-                'GET_OFFER',
-                'GET_OFFER_VIEW',
-                'GET_QUOTE',
-                'GET_SHOWTIMES',
-                'INSTALL_APP',
-                'INSTALL_MOBILE_APP',
-                'LEARN_MORE',
-                'LIKE_PAGE',
-                'LISTEN_MUSIC',
-                'LISTEN_NOW',
-                'MESSAGE_PAGE',
-                'MOBILE_DOWNLOAD',
-                'MOMENTS',
-                'NO_BUTTON',
-                'OPEN_LINK',
-                'ORDER_NOW',
-                'PLAY_GAME',
-                'RECORD_NOW',
-                'SAY_THANKS',
-                'SEE_MORE',
-                'SELL_NOW',
-                'SHARE',
-                'SHOP_NOW',
-                'SIGN_UP',
-                'SUBSCRIBE',
-                'UPDATE_APP',
-                'USE_APP',
-                'USE_MOBILE_APP',
-                'VIDEO_ANNOTATION',
-                'VISIT_PAGES_FEED',
-                'WATCH_MORE',
-                'WATCH_VIDEO',
-                'WHATSAPP_MESSAGE',
-                'WOODHENGE_SUPPORT',
-            ],
         }
         request = FacebookRequest(
             node_id=self['id'],
             method='POST',
-            endpoint='/promotions',
+            endpoint='/private_replies',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
+            target_class=PagePost,
             api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
+            response_parser=ObjectParser(target_class=PagePost, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -899,12 +811,10 @@ class PagePost(
         'backdated_time': 'datetime',
         'call_to_action': 'Object',
         'can_reply_privately': 'bool',
-        'caption': 'string',
         'child_attachments': 'list',
         'comments_mirroring_domain': 'string',
         'coordinates': 'Object',
         'created_time': 'datetime',
-        'description': 'string',
         'event': 'Event',
         'expanded_height': 'unsigned int',
         'expanded_width': 'unsigned int',
@@ -916,19 +826,17 @@ class PagePost(
         'id': 'string',
         'instagram_eligibility': 'string',
         'is_app_share': 'bool',
+        'is_eligible_for_promotion': 'bool',
         'is_expired': 'bool',
         'is_hidden': 'bool',
         'is_instagram_eligible': 'bool',
         'is_popular': 'bool',
         'is_published': 'bool',
         'is_spherical': 'bool',
-        'link': 'string',
         'message': 'string',
         'message_tags': 'list',
         'multi_share_end_card': 'bool',
         'multi_share_optimized': 'bool',
-        'name': 'string',
-        'object_id': 'string',
         'parent_id': 'string',
         'permalink_url': 'Object',
         'picture': 'string',
@@ -939,7 +847,6 @@ class PagePost(
         'properties': 'list',
         'scheduled_publish_time': 'float',
         'shares': 'Object',
-        'source': 'string',
         'status_type': 'string',
         'story': 'string',
         'story_tags': 'list',
@@ -947,7 +854,6 @@ class PagePost(
         'target': 'Profile',
         'targeting': 'Object',
         'timeline_visibility': 'string',
-        'type': 'string',
         'updated_time': 'datetime',
         'via': 'Object',
         'video_buying_eligibility': 'list<string>',

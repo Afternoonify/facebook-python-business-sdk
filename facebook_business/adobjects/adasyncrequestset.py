@@ -73,6 +73,7 @@ class AdAsyncRequestSet(
     def get_endpoint(cls):
         return 'asyncadrequestsets'
 
+    # @deprecated api_create is being deprecated
     def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.adobjects.adaccount import AdAccount
         return AdAccount(api=self._api, fbid=parent_id).create_async_ad_request_set(fields, params, batch, success, failure, pending)
@@ -143,8 +144,8 @@ class AdAsyncRequestSet(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
             'name': 'string',
-            'notification_uri': 'string',
             'notification_mode': 'notification_mode_enum',
+            'notification_uri': 'string',
         }
         enums = {
             'notification_mode_enum': AdAsyncRequestSet.NotificationMode.__dict__.values(),

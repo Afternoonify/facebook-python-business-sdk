@@ -44,16 +44,17 @@ class PlayableContent(
         id = 'id'
         name = 'name'
         owner = 'owner'
+        app_id = 'app_id'
         source = 'source'
         source_url = 'source_url'
         source_zip = 'source_zip'
-        app_id = 'app_id'
 
     # @deprecated get_endpoint function is deprecated
     @classmethod
     def get_endpoint(cls):
         return 'adplayables'
 
+    # @deprecated api_create is being deprecated
     def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.adobjects.adaccount import AdAccount
         return AdAccount(api=self._api, fbid=parent_id).create_ad_playable(fields, params, batch, success, failure, pending)
@@ -92,10 +93,10 @@ class PlayableContent(
         'id': 'string',
         'name': 'string',
         'owner': 'Profile',
+        'app_id': 'string',
         'source': 'file',
         'source_url': 'string',
         'source_zip': 'file',
-        'app_id': 'string',
     }
     @classmethod
     def _get_field_enum_info(cls):

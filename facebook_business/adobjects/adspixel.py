@@ -51,6 +51,7 @@ class AdsPixel(
         first_party_cookie_status = 'first_party_cookie_status'
         id = 'id'
         is_created_by_business = 'is_created_by_business'
+        is_unavailable = 'is_unavailable'
         last_fired_time = 'last_fired_time'
         name = 'name'
         owner_ad_account = 'owner_ad_account'
@@ -84,15 +85,12 @@ class AdsPixel(
         analyze = 'ANALYZE'
         edit = 'EDIT'
 
-    class Type:
-        primary = 'PRIMARY'
-        secondary = 'SECONDARY'
-
     # @deprecated get_endpoint function is deprecated
     @classmethod
     def get_endpoint(cls):
         return 'adspixels'
 
+    # @deprecated api_create is being deprecated
     def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.adobjects.adaccount import AdAccount
         return AdAccount(api=self._api, fbid=parent_id).create_ads_pixel(fields, params, batch, success, failure, pending)
@@ -132,17 +130,17 @@ class AdsPixel(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'name': 'string',
-            'enable_automatic_matching': 'bool',
             'automatic_matching_fields': 'list<automatic_matching_fields_enum>',
-            'first_party_cookie_status': 'first_party_cookie_status_enum',
             'data_use_setting': 'data_use_setting_enum',
+            'enable_automatic_matching': 'bool',
+            'first_party_cookie_status': 'first_party_cookie_status_enum',
+            'name': 'string',
             'server_events_business_id': 'string',
         }
         enums = {
             'automatic_matching_fields_enum': AdsPixel.AutomaticMatchingFields.__dict__.values(),
-            'first_party_cookie_status_enum': AdsPixel.FirstPartyCookieStatus.__dict__.values(),
             'data_use_setting_enum': AdsPixel.DataUseSetting.__dict__.values(),
+            'first_party_cookie_status_enum': AdsPixel.FirstPartyCookieStatus.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -172,7 +170,6 @@ class AdsPixel(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
             'user': 'int',
-            'business': 'string',
         }
         enums = {
         }
@@ -235,9 +232,8 @@ class AdsPixel(
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'user': 'int',
             'tasks': 'list<tasks_enum>',
-            'business': 'string',
+            'user': 'int',
         }
         enums = {
             'tasks_enum': AdsPixel.Tasks.__dict__.values(),
@@ -296,36 +292,6 @@ class AdsPixel(
             self.assure_call()
             return request.execute()
 
-    def create_create_server_to_server_key(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/create_server_to_server_keys',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AdsPixel,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AdsPixel, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def get_da_checks(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -345,69 +311,6 @@ class AdsPixel(
             target_class=DACheck,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=DACheck, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def get_pending_shared_agencies(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        from facebook_business.adobjects.business import Business
-        param_types = {
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='GET',
-            endpoint='/pending_shared_agencies',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=Business,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=Business, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_reset_server_to_server_key(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'type': 'type_enum',
-        }
-        enums = {
-            'type_enum': AdsPixel.Type.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/reset_server_to_server_key',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AdsPixel,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AdsPixel, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -517,38 +420,6 @@ class AdsPixel(
             self.assure_call()
             return request.execute()
 
-    def delete_shared_agencies(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'agency_id': 'string',
-            'business': 'string',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/shared_agencies',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def get_shared_agencies(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -586,11 +457,11 @@ class AdsPixel(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         from facebook_business.adobjects.adspixelstatsresult import AdsPixelStatsResult
         param_types = {
-            'start_time': 'datetime',
-            'end_time': 'datetime',
             'aggregation': 'aggregation_enum',
+            'end_time': 'datetime',
             'event': 'string',
             'event_source': 'string',
+            'start_time': 'datetime',
         }
         enums = {
             'aggregation_enum': AdsPixelStatsResult.Aggregation.__dict__.values(),
@@ -628,6 +499,7 @@ class AdsPixel(
         'first_party_cookie_status': 'string',
         'id': 'string',
         'is_created_by_business': 'bool',
+        'is_unavailable': 'bool',
         'last_fired_time': 'datetime',
         'name': 'string',
         'owner_ad_account': 'AdAccount',
@@ -641,7 +513,6 @@ class AdsPixel(
         field_enum_info['DataUseSetting'] = AdsPixel.DataUseSetting.__dict__.values()
         field_enum_info['FirstPartyCookieStatus'] = AdsPixel.FirstPartyCookieStatus.__dict__.values()
         field_enum_info['Tasks'] = AdsPixel.Tasks.__dict__.values()
-        field_enum_info['Type'] = AdsPixel.Type.__dict__.values()
         return field_enum_info
 
 

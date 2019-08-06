@@ -79,7 +79,6 @@ class ReachFrequencyPrediction(
         frequency_distribution = 'frequency_distribution'
         frequency_distribution_map = 'frequency_distribution_map'
         frequency_distribution_map_agg = 'frequency_distribution_map_agg'
-        full_view_ratio_00 = 'full_view_ratio_00'
         grp_audience_size = 'grp_audience_size'
         grp_avg_probability_map = 'grp_avg_probability_map'
         grp_country_audience_size = 'grp_country_audience_size'
@@ -127,25 +126,24 @@ class ReachFrequencyPrediction(
         timezone_name = 'timezone_name'
         topline_id = 'topline_id'
         tv_viewer_cluster_map = 'tv_viewer_cluster_map'
-        video_view_benchmark_map = 'video_view_benchmark_map'
         video_view_length_constraint = 'video_view_length_constraint'
         viewtag = 'viewtag'
         action = 'action'
-        stop_time = 'stop_time'
-        reach = 'reach'
-        impression = 'impression'
         budget = 'budget'
         deal_id = 'deal_id'
         destination_ids = 'destination_ids'
+        exceptions = 'exceptions'
+        existing_campaign_id = 'existing_campaign_id'
+        grp_buying = 'grp_buying'
+        impression = 'impression'
+        is_full_view = 'is_full_view'
+        is_reach_and_frequency_io_buying = 'is_reach_and_frequency_io_buying'
+        num_curve_points = 'num_curve_points'
+        reach = 'reach'
         rf_prediction_id = 'rf_prediction_id'
         rf_prediction_id_to_release = 'rf_prediction_id_to_release'
         rf_prediction_id_to_share = 'rf_prediction_id_to_share'
-        num_curve_points = 'num_curve_points'
-        grp_buying = 'grp_buying'
-        is_full_view = 'is_full_view'
-        is_reach_and_frequency_io_buying = 'is_reach_and_frequency_io_buying'
-        existing_campaign_id = 'existing_campaign_id'
-        exceptions = 'exceptions'
+        stop_time = 'stop_time'
 
     class Action:
         cancel = 'cancel'
@@ -174,20 +172,15 @@ class ReachFrequencyPrediction(
         regular_sports = 'REGULAR_SPORTS'
         regular_style = 'REGULAR_STYLE'
         regular_tv_movies = 'REGULAR_TV_MOVIES'
+        spanish = 'SPANISH'
         sports = 'SPORTS'
-
-    class Status:
-        active = 'ACTIVE'
-        completed = 'COMPLETED'
-        draft = 'DRAFT'
-        expired = 'EXPIRED'
-        pending = 'PENDING'
 
     # @deprecated get_endpoint function is deprecated
     @classmethod
     def get_endpoint(cls):
         return 'reachfrequencypredictions'
 
+    # @deprecated api_create is being deprecated
     def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.adobjects.adaccount import AdAccount
         return AdAccount(api=self._api, fbid=parent_id).create_reach_frequency_prediction(fields, params, batch, success, failure, pending)
@@ -259,7 +252,6 @@ class ReachFrequencyPrediction(
         'frequency_distribution': 'list<float>',
         'frequency_distribution_map': 'map<unsigned int, list<float>>',
         'frequency_distribution_map_agg': 'map<unsigned int, list<unsigned int>>',
-        'full_view_ratio_00': 'unsigned int',
         'grp_audience_size': 'float',
         'grp_avg_probability_map': 'string',
         'grp_country_audience_size': 'float',
@@ -307,25 +299,24 @@ class ReachFrequencyPrediction(
         'timezone_name': 'string',
         'topline_id': 'unsigned int',
         'tv_viewer_cluster_map': 'map<unsigned int, Object>',
-        'video_view_benchmark_map': 'map<string, ReachFrequencyEstimatesCurve>',
         'video_view_length_constraint': 'unsigned int',
         'viewtag': 'string',
         'action': 'Action',
-        'stop_time': 'unsigned int',
-        'reach': 'unsigned int',
-        'impression': 'unsigned int',
         'budget': 'unsigned int',
         'deal_id': 'string',
         'destination_ids': 'list<string>',
+        'exceptions': 'bool',
+        'existing_campaign_id': 'string',
+        'grp_buying': 'bool',
+        'impression': 'unsigned int',
+        'is_full_view': 'bool',
+        'is_reach_and_frequency_io_buying': 'bool',
+        'num_curve_points': 'unsigned int',
+        'reach': 'unsigned int',
         'rf_prediction_id': 'string',
         'rf_prediction_id_to_release': 'string',
         'rf_prediction_id_to_share': 'string',
-        'num_curve_points': 'unsigned int',
-        'grp_buying': 'bool',
-        'is_full_view': 'bool',
-        'is_reach_and_frequency_io_buying': 'bool',
-        'existing_campaign_id': 'string',
-        'exceptions': 'bool',
+        'stop_time': 'unsigned int',
     }
     @classmethod
     def _get_field_enum_info(cls):
@@ -333,7 +324,6 @@ class ReachFrequencyPrediction(
         field_enum_info['Action'] = ReachFrequencyPrediction.Action.__dict__.values()
         field_enum_info['BuyingType'] = ReachFrequencyPrediction.BuyingType.__dict__.values()
         field_enum_info['InstreamPackages'] = ReachFrequencyPrediction.InstreamPackages.__dict__.values()
-        field_enum_info['Status'] = ReachFrequencyPrediction.Status.__dict__.values()
         return field_enum_info
 
 
