@@ -31,7 +31,8 @@ FacebookAdsApi.init(access_token=access_token)
 fields = [
 ]
 params = {
-  'name': 'Store Visits Campaign',
+  'special_ad_category': 'NONE',
+  'name': 'Store Traffic Campaign',
   'objective': 'STORE_VISITS',
   'promoted_object': {'page_id':'<pageID>'},
   'status': 'PAUSED',

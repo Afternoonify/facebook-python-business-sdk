@@ -42,8 +42,8 @@ class Hotel(
 
     class Field(AbstractObject.Field):
         address = 'address'
-        applinks = 'applinks'
         brand = 'brand'
+        category = 'category'
         currency = 'currency'
         description = 'description'
         guest_ratings = 'guest_ratings'
@@ -59,6 +59,7 @@ class Hotel(
         sanitized_images = 'sanitized_images'
         star_rating = 'star_rating'
         url = 'url'
+        applinks = 'applinks'
         base_price = 'base_price'
 
     # @deprecated get_endpoint function is deprecated
@@ -206,8 +207,8 @@ class Hotel(
 
     _field_types = {
         'address': 'string',
-        'applinks': 'AppLinks',
         'brand': 'string',
+        'category': 'string',
         'currency': 'string',
         'description': 'string',
         'guest_ratings': 'string',
@@ -223,6 +224,7 @@ class Hotel(
         'sanitized_images': 'list<string>',
         'star_rating': 'float',
         'url': 'string',
+        'applinks': 'Object',
         'base_price': 'unsigned int',
     }
     @classmethod

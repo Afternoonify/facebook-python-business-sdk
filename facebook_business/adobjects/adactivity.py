@@ -107,9 +107,11 @@ class AdActivity(
         update_ad_set_bidding = 'update_ad_set_bidding'
         update_ad_set_budget = 'update_ad_set_budget'
         update_ad_set_duration = 'update_ad_set_duration'
+        update_ad_set_min_spend_target = 'update_ad_set_min_spend_target'
         update_ad_set_name = 'update_ad_set_name'
         update_ad_set_optimization_goal = 'update_ad_set_optimization_goal'
         update_ad_set_run_status = 'update_ad_set_run_status'
+        update_ad_set_spend_cap = 'update_ad_set_spend_cap'
         update_ad_set_target_spec = 'update_ad_set_target_spec'
         update_ad_targets_spec = 'update_ad_targets_spec'
         update_adgroup_stop_delivery = 'update_adgroup_stop_delivery'
@@ -123,6 +125,7 @@ class AdActivity(
         update_campaign_group_spend_cap = 'update_campaign_group_spend_cap'
         update_campaign_name = 'update_campaign_name'
         update_campaign_run_status = 'update_campaign_run_status'
+        update_campaign_schedule = 'update_campaign_schedule'
 
     class Category:
         account = 'ACCOUNT'

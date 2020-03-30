@@ -41,9 +41,11 @@ class AdAssetFeedSpec(
         ad_formats = 'ad_formats'
         additional_data = 'additional_data'
         asset_customization_rules = 'asset_customization_rules'
+        autotranslate = 'autotranslate'
         bodies = 'bodies'
         call_to_action_types = 'call_to_action_types'
         captions = 'captions'
+        carousels = 'carousels'
         descriptions = 'descriptions'
         groups = 'groups'
         images = 'images'
@@ -111,9 +113,11 @@ class AdAssetFeedSpec(
         'ad_formats': 'list<string>',
         'additional_data': 'Object',
         'asset_customization_rules': 'list<Object>',
+        'autotranslate': 'list<string>',
         'bodies': 'list<AdAssetFeedSpecBody>',
         'call_to_action_types': 'list<CallToActionTypes>',
         'captions': 'list<AdAssetFeedSpecCaption>',
+        'carousels': 'list<Object>',
         'descriptions': 'list<AdAssetFeedSpecDescription>',
         'groups': 'list<AdAssetFeedSpecGroupRule>',
         'images': 'list<AdAssetFeedSpecImage>',

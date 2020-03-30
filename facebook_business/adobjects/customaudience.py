@@ -107,7 +107,6 @@ class CustomAudience(
         prefill = 'prefill'
         product_set_id = 'product_set_id'
         source = 'source'
-        study_spec = 'study_spec'
         tags = 'tags'
         video_group_ids = 'video_group_ids'
 
@@ -127,7 +126,9 @@ class CustomAudience(
         flight = 'FLIGHT'
         home_listing = 'HOME_LISTING'
         hotel = 'HOTEL'
+        location_based_item = 'LOCATION_BASED_ITEM'
         media_title = 'MEDIA_TITLE'
+        offline_product = 'OFFLINE_PRODUCT'
         product = 'PRODUCT'
         vehicle = 'VEHICLE'
         vehicle_offer = 'VEHICLE_OFFER'
@@ -200,6 +201,7 @@ class CustomAudience(
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
             'ad_account_id': 'string',
+            'target_countries': 'list<string>',
         }
         enums = {
         }
@@ -264,7 +266,6 @@ class CustomAudience(
             'rule_aggregation': 'string',
             'seed_audience': 'unsigned int',
             'source': 'string',
-            'study_spec': 'map',
             'tags': 'list<string>',
         }
         enums = {
@@ -424,38 +425,6 @@ class CustomAudience(
             self.assure_call()
             return request.execute()
 
-    def create_capability(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'accounts_capabilities': 'string',
-            'relationship_type': 'list<string>',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/capabilities',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
     def get_prefills(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -537,72 +506,6 @@ class CustomAudience(
             target_class=CustomAudiencesharedAccountInfo,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=CustomAudiencesharedAccountInfo, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def delete_upload(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'namespace': 'string',
-            'payload': 'Object',
-            'session': 'Object',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/upload',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_upload(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'namespace': 'string',
-            'payload': 'Object',
-            'session': 'Object',
-        }
-        enums = {
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/upload',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=CustomAudience,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=CustomAudience, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -747,7 +650,6 @@ class CustomAudience(
         'prefill': 'bool',
         'product_set_id': 'string',
         'source': 'string',
-        'study_spec': 'map',
         'tags': 'list<string>',
         'video_group_ids': 'list<string>',
     }

@@ -46,9 +46,11 @@ class AudioCopyright(
         id = 'id'
         in_conflict = 'in_conflict'
         isrc = 'isrc'
+        match_rule = 'match_rule'
         ownership_countries = 'ownership_countries'
         reference_file_status = 'reference_file_status'
         ridge_monitoring_status = 'ridge_monitoring_status'
+        tags = 'tags'
         update_time = 'update_time'
         whitelisted_fb_users = 'whitelisted_fb_users'
         whitelisted_ig_users = 'whitelisted_ig_users'
@@ -89,9 +91,11 @@ class AudioCopyright(
         'id': 'string',
         'in_conflict': 'bool',
         'isrc': 'string',
+        'match_rule': 'VideoCopyrightRule',
         'ownership_countries': 'list<string>',
         'reference_file_status': 'string',
         'ridge_monitoring_status': 'string',
+        'tags': 'list<string>',
         'update_time': 'datetime',
         'whitelisted_fb_users': 'list<Object>',
         'whitelisted_ig_users': 'list<string>',

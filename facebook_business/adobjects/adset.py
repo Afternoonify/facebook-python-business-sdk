@@ -74,6 +74,7 @@ class AdSet(
         instagram_actor_id = 'instagram_actor_id'
         is_dynamic_creative = 'is_dynamic_creative'
         issues_info = 'issues_info'
+        learning_stage_info = 'learning_stage_info'
         lifetime_budget = 'lifetime_budget'
         lifetime_imps = 'lifetime_imps'
         lifetime_min_spend_target = 'lifetime_min_spend_target'
@@ -105,6 +106,7 @@ class AdSet(
         time_start = 'time_start'
         time_stop = 'time_stop'
         topline_id = 'topline_id'
+        tune_for_category = 'tune_for_category'
         upstream_events = 'upstream_events'
 
     class BidStrategy:
@@ -122,7 +124,6 @@ class AdSet(
         page_likes = 'PAGE_LIKES'
         post_engagement = 'POST_ENGAGEMENT'
         thruplay = 'THRUPLAY'
-        video_views = 'VIDEO_VIEWS'
 
     class ConfiguredStatus:
         active = 'ACTIVE'
@@ -133,7 +134,9 @@ class AdSet(
     class EffectiveStatus:
         active = 'ACTIVE'
         archived = 'ARCHIVED'
+        campaign_paused = 'CAMPAIGN_PAUSED'
         deleted = 'DELETED'
+        in_process = 'IN_PROCESS'
         paused = 'PAUSED'
         with_issues = 'WITH_ISSUES'
 
@@ -162,7 +165,7 @@ class AdSet(
         thruplay = 'THRUPLAY'
         two_second_continuous_video_views = 'TWO_SECOND_CONTINUOUS_VIDEO_VIEWS'
         value = 'VALUE'
-        video_views = 'VIDEO_VIEWS'
+        visit_instagram_profile = 'VISIT_INSTAGRAM_PROFILE'
 
     class Status:
         active = 'ACTIVE'
@@ -170,9 +173,31 @@ class AdSet(
         deleted = 'DELETED'
         paused = 'PAUSED'
 
+    class DatePreset:
+        last_14d = 'last_14d'
+        last_28d = 'last_28d'
+        last_30d = 'last_30d'
+        last_3d = 'last_3d'
+        last_7d = 'last_7d'
+        last_90d = 'last_90d'
+        last_month = 'last_month'
+        last_quarter = 'last_quarter'
+        last_week_mon_sun = 'last_week_mon_sun'
+        last_week_sun_sat = 'last_week_sun_sat'
+        last_year = 'last_year'
+        lifetime = 'lifetime'
+        this_month = 'this_month'
+        this_quarter = 'this_quarter'
+        this_week_mon_today = 'this_week_mon_today'
+        this_week_sun_today = 'this_week_sun_today'
+        this_year = 'this_year'
+        today = 'today'
+        yesterday = 'yesterday'
+
     class DestinationType:
         app = 'APP'
         applinks_automatic = 'APPLINKS_AUTOMATIC'
+        facebook = 'FACEBOOK'
         messenger = 'MESSENGER'
         undefined = 'UNDEFINED'
         website = 'WEBSITE'
@@ -198,26 +223,11 @@ class AdSet(
         trip_consideration = 'TRIP_CONSIDERATION'
         video_sound_on = 'VIDEO_SOUND_ON'
 
-    class DatePreset:
-        last_14d = 'LAST_14D'
-        last_28d = 'LAST_28D'
-        last_30d = 'LAST_30D'
-        last_3d = 'LAST_3D'
-        last_7d = 'LAST_7D'
-        last_90d = 'LAST_90D'
-        last_month = 'LAST_MONTH'
-        last_quarter = 'LAST_QUARTER'
-        last_week_mon_sun = 'LAST_WEEK_MON_SUN'
-        last_week_sun_sat = 'LAST_WEEK_SUN_SAT'
-        last_year = 'LAST_YEAR'
-        lifetime = 'LIFETIME'
-        this_month = 'THIS_MONTH'
-        this_quarter = 'THIS_QUARTER'
-        this_week_mon_today = 'THIS_WEEK_MON_TODAY'
-        this_week_sun_today = 'THIS_WEEK_SUN_TODAY'
-        this_year = 'THIS_YEAR'
-        today = 'TODAY'
-        yesterday = 'YESTERDAY'
+    class TuneForCategory:
+        credit = 'CREDIT'
+        employment = 'EMPLOYMENT'
+        housing = 'HOUSING'
+        none = 'NONE'
 
     class Operator:
         all = 'ALL'
@@ -231,7 +241,7 @@ class AdSet(
     # @deprecated get_endpoint function is deprecated
     @classmethod
     def get_endpoint(cls):
-        return 'ad_sets'
+        return 'adsets'
 
     # @deprecated api_create is being deprecated
     def api_create(self, parent_id, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
@@ -366,6 +376,7 @@ class AdSet(
             'time_based_ad_rotation_intervals': 'list<unsigned int>',
             'time_start': 'datetime',
             'time_stop': 'datetime',
+            'tune_for_category': 'tune_for_category_enum',
             'upstream_events': 'map',
         }
         enums = {
@@ -377,6 +388,7 @@ class AdSet(
             'optimization_goal_enum': AdSet.OptimizationGoal.__dict__.values(),
             'optimization_sub_event_enum': AdSet.OptimizationSubEvent.__dict__.values(),
             'status_enum': AdSet.Status.__dict__.values(),
+            'tune_for_category_enum': AdSet.TuneForCategory.__dict__.values(),
         }
         request = FacebookRequest(
             node_id=self['id'],
@@ -501,6 +513,72 @@ class AdSet(
             self.assure_call()
             return request.execute()
 
+    def delete_ad_labels(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        param_types = {
+            'adlabels': 'list<Object>',
+            'execution_options': 'list<execution_options_enum>',
+        }
+        enums = {
+            'execution_options_enum': AdSet.ExecutionOptions.__dict__.values(),
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='DELETE',
+            endpoint='/adlabels',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=AbstractCrudObject,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
+    def create_ad_label(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        param_types = {
+            'adlabels': 'list<Object>',
+            'execution_options': 'list<execution_options_enum>',
+        }
+        enums = {
+            'execution_options_enum': AdSet.ExecutionOptions.__dict__.values(),
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='POST',
+            endpoint='/adlabels',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=AdSet,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=AdSet, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
     def get_ad_rules_governed(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
@@ -542,7 +620,6 @@ class AdSet(
             'ad_draft_id': 'string',
             'date_preset': 'date_preset_enum',
             'effective_status': 'list<string>',
-            'include_deleted': 'bool',
             'include_drafts': 'bool',
             'time_range': 'Object',
             'updated_since': 'int',
@@ -592,6 +669,44 @@ class AdSet(
             target_class=AdAsyncRequest,
             api_type='EDGE',
             response_parser=ObjectParser(target_class=AdAsyncRequest, api=self._api),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
+    def get_content_delivery_report(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        from facebook_business.adobjects.contentdeliveryreport import ContentDeliveryReport
+        param_types = {
+            'end_date': 'datetime',
+            'platform': 'platform_enum',
+            'position': 'position_enum',
+            'start_date': 'datetime',
+            'summary': 'bool',
+        }
+        enums = {
+            'platform_enum': ContentDeliveryReport.Platform.__dict__.values(),
+            'position_enum': ContentDeliveryReport.Position.__dict__.values(),
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='GET',
+            endpoint='/content_delivery_report',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=ContentDeliveryReport,
+            api_type='EDGE',
+            response_parser=ObjectParser(target_class=ContentDeliveryReport, api=self._api),
         )
         request.add_params(params)
         request.add_fields(fields)
@@ -812,6 +927,11 @@ class AdSet(
             'level_enum': AdsInsights.Level.__dict__.values(),
             'summary_action_breakdowns_enum': AdsInsights.SummaryActionBreakdowns.__dict__.values(),
         }
+
+        if fields is not None:
+            params['fields'] = params.get('fields') if params.get('fields') is not None else list()
+            params['fields'].extend(field for field in fields if field not in params['fields'])
+
         request = FacebookRequest(
             node_id=self['id'],
             method='POST',
@@ -824,73 +944,6 @@ class AdSet(
             include_summary=False,
         )
         request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def delete_labels(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'adlabels': 'list<Object>',
-            'execution_options': 'list<execution_options_enum>',
-        }
-        enums = {
-            'execution_options_enum': AdSet.ExecutionOptions.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='DELETE',
-            endpoint='/labels',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AbstractCrudObject,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AbstractCrudObject, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
-
-        if batch is not None:
-            request.add_to_batch(batch, success=success, failure=failure)
-            return request
-        elif pending:
-            return request
-        else:
-            self.assure_call()
-            return request.execute()
-
-    def create_label(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
-        from facebook_business.utils import api_utils
-        if batch is None and (success is not None or failure is not None):
-          api_utils.warning('`success` and `failure` callback only work for batch call.')
-        param_types = {
-            'adlabels': 'list<Object>',
-            'execution_options': 'list<execution_options_enum>',
-        }
-        enums = {
-            'execution_options_enum': AdSet.ExecutionOptions.__dict__.values(),
-        }
-        request = FacebookRequest(
-            node_id=self['id'],
-            method='POST',
-            endpoint='/labels',
-            api=self._api,
-            param_checker=TypeChecker(param_types, enums),
-            target_class=AdSet,
-            api_type='EDGE',
-            response_parser=ObjectParser(target_class=AdSet, api=self._api),
-        )
-        request.add_params(params)
-        request.add_fields(fields)
 
         if batch is not None:
             request.add_to_batch(batch, success=success, failure=failure)
@@ -962,6 +1015,7 @@ class AdSet(
         'instagram_actor_id': 'string',
         'is_dynamic_creative': 'bool',
         'issues_info': 'list<AdCampaignIssuesInfo>',
+        'learning_stage_info': 'AdCampaignLearningStageInfo',
         'lifetime_budget': 'string',
         'lifetime_imps': 'int',
         'lifetime_min_spend_target': 'string',
@@ -993,6 +1047,7 @@ class AdSet(
         'time_start': 'datetime',
         'time_stop': 'datetime',
         'topline_id': 'string',
+        'tune_for_category': 'TuneForCategory',
         'upstream_events': 'map',
     }
     @classmethod
@@ -1004,11 +1059,12 @@ class AdSet(
         field_enum_info['EffectiveStatus'] = AdSet.EffectiveStatus.__dict__.values()
         field_enum_info['OptimizationGoal'] = AdSet.OptimizationGoal.__dict__.values()
         field_enum_info['Status'] = AdSet.Status.__dict__.values()
+        field_enum_info['DatePreset'] = AdSet.DatePreset.__dict__.values()
         field_enum_info['DestinationType'] = AdSet.DestinationType.__dict__.values()
         field_enum_info['ExecutionOptions'] = AdSet.ExecutionOptions.__dict__.values()
         field_enum_info['FullFunnelExplorationMode'] = AdSet.FullFunnelExplorationMode.__dict__.values()
         field_enum_info['OptimizationSubEvent'] = AdSet.OptimizationSubEvent.__dict__.values()
-        field_enum_info['DatePreset'] = AdSet.DatePreset.__dict__.values()
+        field_enum_info['TuneForCategory'] = AdSet.TuneForCategory.__dict__.values()
         field_enum_info['Operator'] = AdSet.Operator.__dict__.values()
         field_enum_info['StatusOption'] = AdSet.StatusOption.__dict__.values()
         return field_enum_info

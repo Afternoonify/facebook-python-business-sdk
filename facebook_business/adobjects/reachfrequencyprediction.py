@@ -60,7 +60,6 @@ class ReachFrequencyPrediction(
         daily_impression_curve = 'daily_impression_curve'
         daily_impression_curve_map = 'daily_impression_curve_map'
         day_parting_schedule = 'day_parting_schedule'
-        demo_breakdown = 'demo_breakdown'
         destination_id = 'destination_id'
         end_time = 'end_time'
         expiration_time = 'expiration_time'
@@ -73,10 +72,8 @@ class ReachFrequencyPrediction(
         external_minimum_impression = 'external_minimum_impression'
         external_minimum_reach = 'external_minimum_reach'
         external_reach = 'external_reach'
-        external_values_breakdown = 'external_values_breakdown'
         feed_ratio_0000 = 'feed_ratio_0000'
         frequency_cap = 'frequency_cap'
-        frequency_distribution = 'frequency_distribution'
         frequency_distribution_map = 'frequency_distribution_map'
         frequency_distribution_map_agg = 'frequency_distribution_map_agg'
         grp_audience_size = 'grp_audience_size'
@@ -233,7 +230,6 @@ class ReachFrequencyPrediction(
         'daily_impression_curve': 'list<float>',
         'daily_impression_curve_map': 'map<unsigned int, list<float>>',
         'day_parting_schedule': 'list<ReachFrequencyDayPart>',
-        'demo_breakdown': 'ReachFrequencyEstimatesDemoBreakdown',
         'destination_id': 'string',
         'end_time': 'datetime',
         'expiration_time': 'datetime',
@@ -246,10 +242,8 @@ class ReachFrequencyPrediction(
         'external_minimum_impression': 'unsigned int',
         'external_minimum_reach': 'unsigned int',
         'external_reach': 'unsigned int',
-        'external_values_breakdown': 'string',
         'feed_ratio_0000': 'unsigned int',
         'frequency_cap': 'unsigned int',
-        'frequency_distribution': 'list<float>',
         'frequency_distribution_map': 'map<unsigned int, list<float>>',
         'frequency_distribution_map_agg': 'map<unsigned int, list<unsigned int>>',
         'grp_audience_size': 'float',

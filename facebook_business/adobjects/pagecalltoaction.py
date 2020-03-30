@@ -63,6 +63,7 @@ class PageCallToAction(
 
     class AndroidDestinationType:
         app_deeplink = 'APP_DEEPLINK'
+        become_a_volunteer = 'BECOME_A_VOLUNTEER'
         email = 'EMAIL'
         facebook_app = 'FACEBOOK_APP'
         messenger = 'MESSENGER'
@@ -82,6 +83,7 @@ class PageCallToAction(
         website = 'WEBSITE'
 
     class Type:
+        become_a_volunteer = 'BECOME_A_VOLUNTEER'
         book_appointment = 'BOOK_APPOINTMENT'
         book_now = 'BOOK_NOW'
         buy_tickets = 'BUY_TICKETS'
@@ -111,12 +113,43 @@ class PageCallToAction(
         woodhenge_support = 'WOODHENGE_SUPPORT'
 
     class WebDestinationType:
+        become_a_volunteer = 'BECOME_A_VOLUNTEER'
         become_supporter = 'BECOME_SUPPORTER'
         email = 'EMAIL'
         messenger = 'MESSENGER'
         none = 'NONE'
         shop_on_facebook = 'SHOP_ON_FACEBOOK'
         website = 'WEBSITE'
+
+    def api_delete(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        param_types = {
+        }
+        enums = {
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='DELETE',
+            endpoint='/',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=AbstractCrudObject,
+            api_type='NODE',
+            response_parser=ObjectParser(reuse_object=self),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
 
     def api_get(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
@@ -129,6 +162,54 @@ class PageCallToAction(
         request = FacebookRequest(
             node_id=self['id'],
             method='GET',
+            endpoint='/',
+            api=self._api,
+            param_checker=TypeChecker(param_types, enums),
+            target_class=PageCallToAction,
+            api_type='NODE',
+            response_parser=ObjectParser(reuse_object=self),
+        )
+        request.add_params(params)
+        request.add_fields(fields)
+
+        if batch is not None:
+            request.add_to_batch(batch, success=success, failure=failure)
+            return request
+        elif pending:
+            return request
+        else:
+            self.assure_call()
+            return request.execute()
+
+    def api_update(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+        from facebook_business.utils import api_utils
+        if batch is None and (success is not None or failure is not None):
+          api_utils.warning('`success` and `failure` callback only work for batch call.')
+        param_types = {
+            'android_app_id': 'int',
+            'android_deeplink': 'string',
+            'android_destination_type': 'android_destination_type_enum',
+            'android_package_name': 'string',
+            'android_url': 'string',
+            'email_address': 'string',
+            'intl_number_with_plus': 'string',
+            'iphone_app_id': 'int',
+            'iphone_deeplink': 'string',
+            'iphone_destination_type': 'iphone_destination_type_enum',
+            'iphone_url': 'string',
+            'type': 'type_enum',
+            'web_destination_type': 'web_destination_type_enum',
+            'web_url': 'string',
+        }
+        enums = {
+            'android_destination_type_enum': PageCallToAction.AndroidDestinationType.__dict__.values(),
+            'iphone_destination_type_enum': PageCallToAction.IphoneDestinationType.__dict__.values(),
+            'type_enum': PageCallToAction.Type.__dict__.values(),
+            'web_destination_type_enum': PageCallToAction.WebDestinationType.__dict__.values(),
+        }
+        request = FacebookRequest(
+            node_id=self['id'],
+            method='POST',
             endpoint='/',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),

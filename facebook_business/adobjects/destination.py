@@ -42,7 +42,6 @@ class Destination(
 
     class Field(AbstractObject.Field):
         address = 'address'
-        applinks = 'applinks'
         currency = 'currency'
         description = 'description'
         destination_id = 'destination_id'
@@ -87,7 +86,6 @@ class Destination(
 
     _field_types = {
         'address': 'string',
-        'applinks': 'AppLinks',
         'currency': 'string',
         'description': 'string',
         'destination_id': 'string',

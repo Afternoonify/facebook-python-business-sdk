@@ -113,7 +113,6 @@ class Targeting(
         product_audience_specs = 'product_audience_specs'
         prospecting_audience = 'prospecting_audience'
         publisher_platforms = 'publisher_platforms'
-        publisher_visibility_categories = 'publisher_visibility_categories'
         radius = 'radius'
         regions = 'regions'
         relationship_statuses = 'relationship_statuses'
@@ -173,7 +172,7 @@ class Targeting(
         'exclude_reached_since': 'list<string>',
         'excluded_brand_safety_content_types': 'list<string>',
         'excluded_connections': 'list<IDName>',
-        'excluded_custom_audiences': 'list<IDName>',
+        'excluded_custom_audiences': 'list<RawCustomAudience>',
         'excluded_dynamic_audience_ids': 'list<string>',
         'excluded_engagement_specs': 'list<TargetingDynamicRule>',
         'excluded_geo_locations': 'TargetingGeoLocation',
@@ -214,7 +213,6 @@ class Targeting(
         'product_audience_specs': 'list<TargetingProductAudienceSpec>',
         'prospecting_audience': 'TargetingProspectingAudience',
         'publisher_platforms': 'list<string>',
-        'publisher_visibility_categories': 'list<string>',
         'radius': 'string',
         'regions': 'list<IDName>',
         'relationship_statuses': 'list<unsigned int>',

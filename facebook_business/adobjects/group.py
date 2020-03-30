@@ -67,9 +67,9 @@ class Group(
         none = 'NONE'
 
     class PostPermissions:
-        admin_only = 'ADMIN_ONLY'
-        anyone = 'ANYONE'
-        none = 'NONE'
+        value_0 = '0'
+        value_1 = '1'
+        value_2 = '2'
 
     class Purpose:
         casual = 'CASUAL'
@@ -78,6 +78,7 @@ class Group(
         couple = 'COUPLE'
         coworkers = 'COWORKERS'
         custom = 'CUSTOM'
+        deals = 'DEALS'
         ephemeral = 'EPHEMERAL'
         event_planning = 'EVENT_PLANNING'
         family = 'FAMILY'
@@ -90,16 +91,18 @@ class Group(
         high_school_forum = 'HIGH_SCHOOL_FORUM'
         jobs = 'JOBS'
         learning = 'LEARNING'
-        meme = 'MEME'
         mentorship = 'MENTORSHIP'
         neighbors = 'NEIGHBORS'
         none = 'NONE'
+        oculus = 'OCULUS'
+        parenting = 'PARENTING'
         parents = 'PARENTS'
         project = 'PROJECT'
         real_world = 'REAL_WORLD'
         real_world_at_work = 'REAL_WORLD_AT_WORK'
         school_class = 'SCHOOL_CLASS'
         sorority = 'SORORITY'
+        sports = 'SPORTS'
         study_group = 'STUDY_GROUP'
         support = 'SUPPORT'
         teammates = 'TEAMMATES'
@@ -125,6 +128,7 @@ class Group(
         couple = 'COUPLE'
         coworkers = 'COWORKERS'
         custom = 'CUSTOM'
+        deals = 'DEALS'
         ephemeral = 'EPHEMERAL'
         event_planning = 'EVENT_PLANNING'
         family = 'FAMILY'
@@ -137,16 +141,18 @@ class Group(
         high_school_forum = 'HIGH_SCHOOL_FORUM'
         jobs = 'JOBS'
         learning = 'LEARNING'
-        meme = 'MEME'
         mentorship = 'MENTORSHIP'
         neighbors = 'NEIGHBORS'
         none = 'NONE'
+        oculus = 'OCULUS'
+        parenting = 'PARENTING'
         parents = 'PARENTS'
         project = 'PROJECT'
         real_world = 'REAL_WORLD'
         real_world_at_work = 'REAL_WORLD_AT_WORK'
         school_class = 'SCHOOL_CLASS'
         sorority = 'SORORITY'
+        sports = 'SPORTS'
         study_group = 'STUDY_GROUP'
         support = 'SUPPORT'
         teammates = 'TEAMMATES'
@@ -166,26 +172,12 @@ class Group(
         work_teamwork = 'WORK_TEAMWORK'
 
     class SuggestionCategory:
-        close_friends = 'CLOSE_FRIENDS'
-        close_friends_generic = 'CLOSE_FRIENDS_GENERIC'
-        current_city = 'CURRENT_CITY'
         event = 'EVENT'
-        family = 'FAMILY'
-        friend_list = 'FRIEND_LIST'
-        games = 'GAMES'
-        life_event = 'LIFE_EVENT'
         messenger = 'MESSENGER'
-        messenger_thread = 'MESSENGER_THREAD'
-        nearby_friends = 'NEARBY_FRIENDS'
-        page_admin = 'PAGE_ADMIN'
-        school = 'SCHOOL'
-        school_generic = 'SCHOOL_GENERIC'
-        top_page = 'TOP_PAGE'
         work = 'WORK'
         workplace = 'WORKPLACE'
         workplace_1_1 = 'WORKPLACE_1_1'
         workplace_manager = 'WORKPLACE_MANAGER'
-        work_generic = 'WORK_GENERIC'
 
     def api_get(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
@@ -630,7 +622,9 @@ class Group(
                 'DRAFT',
                 'INLINE_CREATED',
                 'PUBLISHED',
+                'REVIEWABLE_BRANDED_CONTENT',
                 'SCHEDULED',
+                'SCHEDULED_RECURRING',
             ],
         }
         request = FacebookRequest(
@@ -1010,6 +1004,7 @@ class Group(
             'ios_bundle_id': 'string',
             'is_explicit_location': 'bool',
             'is_explicit_place': 'bool',
+            'is_visual_search': 'bool',
             'manual_privacy': 'bool',
             'message': 'string',
             'name': 'string',

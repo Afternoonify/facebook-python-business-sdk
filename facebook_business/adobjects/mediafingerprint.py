@@ -56,7 +56,12 @@ class MediaFingerprint(
         other = 'OTHER'
         songtrack = 'SONGTRACK'
 
-    def api_get(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    class FingerprintValidity:
+        expired = 'EXPIRED'
+        expiring = 'EXPIRING'
+        valid = 'VALID'
+
+    def api_delete(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
@@ -66,11 +71,11 @@ class MediaFingerprint(
         }
         request = FacebookRequest(
             node_id=self['id'],
-            method='GET',
+            method='DELETE',
             endpoint='/',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
-            target_class=MediaFingerprint,
+            target_class=AbstractCrudObject,
             api_type='NODE',
             response_parser=ObjectParser(reuse_object=self),
         )
@@ -86,20 +91,17 @@ class MediaFingerprint(
             self.assure_call()
             return request.execute()
 
-    def api_update(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
+    def api_get(self, fields=None, params=None, batch=None, success=None, failure=None, pending=False):
         from facebook_business.utils import api_utils
         if batch is None and (success is not None or failure is not None):
           api_utils.warning('`success` and `failure` callback only work for batch call.')
         param_types = {
-            'metadata': 'list',
-            'title': 'string',
-            'universal_content_id': 'string',
         }
         enums = {
         }
         request = FacebookRequest(
             node_id=self['id'],
-            method='POST',
+            method='GET',
             endpoint='/',
             api=self._api,
             param_checker=TypeChecker(param_types, enums),
@@ -132,6 +134,7 @@ class MediaFingerprint(
     def _get_field_enum_info(cls):
         field_enum_info = {}
         field_enum_info['FingerprintContentType'] = MediaFingerprint.FingerprintContentType.__dict__.values()
+        field_enum_info['FingerprintValidity'] = MediaFingerprint.FingerprintValidity.__dict__.values()
         return field_enum_info
 
 
